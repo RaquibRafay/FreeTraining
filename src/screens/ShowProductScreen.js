@@ -12,19 +12,39 @@ import realm from '../../store/realm';
 
 const ShowProductScreen = (props) => {
   const { navigation } = props
-  const [data,setData] = useState([])
+  const [data, setData] = useState([])
   const [final, setFinal] = useState([])
 
   useEffect(() => {
-    setData(realm.objects('Training'));
-    const training = data
-    const final = [...training].sort((a, b) => b.id - a.id)
-    const newData = final.map((item) => {
-        item.checkedStatus = false
-        return item
-    })
-    setFinal(newData)
-}, []);
+    const listPage = navigation.addListener('focus', () => {
+      setData(realm.objects('Training'));
+    }); // code to collect data from database
+    return listPage;
+
+  }, []);
+
+  const dateFormat = date => {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const transactionDate = new Date(date);
+    const dateOnly = transactionDate.getDate();
+    const monthOnly = transactionDate.getMonth();
+    const yearOnly = transactionDate.getFullYear();
+
+    return months[monthOnly] + '' + dateOnly + ',' + yearOnly;
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -41,17 +61,12 @@ const ShowProductScreen = (props) => {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity style={styles.itemButton} onPress={() => navigation.navigate('TrainingScreen', { trainingId: item.id })}>
-            <View style={styles.trainingContainer}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.image }}
-              />
-
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.text}>{item.date}</Text>
+              <View style={styles.trainingContainer}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.text}>{dateFormat(item.date)}</Text>
+                </View>
               </View>
-            </View>
             </TouchableOpacity>
           )
         }}
@@ -100,7 +115,7 @@ const styles = StyleSheet.create({
   trainingContainer: {
     flex: 1,
     flexDirection: 'row',
-    borderRadius:100
+    borderRadius: 100
   },
   title: {
     color: 'black',

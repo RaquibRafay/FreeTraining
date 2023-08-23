@@ -33,20 +33,14 @@ const OlahragaOtotPerut = (props) => {
         const allData = olahragaList.filter(olahragaList => olahragaList.id === trainingId)
         const lastId = allData.length === 0 ? 0 : allData[allData.length - 1].id
 
-        // realm.write(() => {
-        //     realm.create('Training', {
-        //         id: lastId + 1,
-        //         date: new Date().toISOString() ,
-        //         name: allData.name,
-        //     })
-        // })
-        console.log(lastId + 1)
-        console.log(new Date().toISOString())
-        console.log(allData.name)
+        realm.write(() => {
+            realm.create('Training', {
+                id: lastId + 1,
+                date: new Date().toISOString(),
+                name: allData[0].name,
+            })
+        })
     }
-
- 
-   
 
     return (
         <View style={styles.mainContainer}>
